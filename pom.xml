@@ -221,8 +221,17 @@
         <plugin.surefire.version>2.18.1</plugin.surefire.version>
         <!-- Extensions versions -->
         <extension.wagon.version>2.10</extension.wagon.version>
+        <!-- Third-party web assets managed as webjars dependencies -->
+        <webjars.lib>${project.build.directory}/webjars</webjars.lib>
+        <web.lib>${project.build.directory}/classes/lib</web.lib>
+        <bootstrap.version>3.3.5</bootstrap.version>
+        <font-awesome.version>4.3.0</font-awesome.version>
+        <highlightjs.version>8.7</highlightjs.version>
+        <html5shiv.version>3.7.3</html5shiv.version>
+        <jquery.version>1.11.3</jquery.version>
         <!-- Maven Site -->
-        <site.skin.version>0.2.3</site.skin.version>
+        <!-- use the current working version -->
+        <site.skin.version>${project.version}</site.skin.version>
         <bintrayURL>https://bintray.com/bernardo-mg/maven/docs-maven-skin/view</bintrayURL>
         <mavenURL>http://mvnrepository.com/artifact/com.wandrell.maven.skins/docs-maven-skin</mavenURL>
     </properties>
@@ -244,6 +253,38 @@
             <artifactId>velocity</artifactId>
             <version>${velocity.version}</version>
         </dependency>
+        <!-- web jars -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>${bootstrap.version}</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootswatch</artifactId>
+            <!-- sync with bootstrap version -->
+            <version>${bootstrap.version}</version>
+        </dependency>           
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>${font-awesome.version}</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>html5shiv</artifactId>
+            <version>${html5shiv.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+            <version>${jquery.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>highlightjs</artifactId>
+            <version>${highlightjs.version}</version>
+        </dependency>                           
     </dependencies>
 
     <!-- ********************************************** -->
@@ -263,7 +304,7 @@
                     <include>META-INF/maven/*</include>
                 </includes>
                 <filtering>true</filtering>
-            </resource>
+            </resource>          
         </resources>
         <extensions>
             <extension>
@@ -510,6 +551,49 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <!-- download and unpack the web assets (see dependencies) -->
+                    <execution>
+                        <id>unpack org.webjars dependencies</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeGroupIds>org.webjars</includeGroupIds>
+                            <includes>,**/bootstrap.min.css,**/bootstrap.min.js,**/font-awesome.min.css,**/font-awesome/**/fonts/*.*,**/highlight.min.js,**/styles/*.*,**/html5sh*.min.js,**/jquery*min.js</includes>
+                            <outputDirectory>${webjars.lib}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <!-- copy the unpacked files into the theme -->
+                    <execution>
+                        <id>package-weblibs</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy todir="${web.lib}">
+                                    <fileset dir="${webjars.lib}/META-INF/resources/webjars">
+                                        <include name="**/*.*" />
+                                    </fileset>
+                                    <mapper type="regexp" from="^(.[^/]+)/.[^/]+/(.+)$" to="\1/\2" />
+                                </copy>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>                       
         </plugins>
     </build>
 
@@ -564,5 +648,4 @@
             </plugin>
         </plugins>
     </reporting>
-
 </project>

@@ -31,8 +31,8 @@ $(document).ready(function () {
  */
 function toggleDropdownChevronOpen() {
     $(this).find('.chevron_toggleable')
-        .removeClass("fa fa-chevron-up")
-        .addClass("fa fa-chevron-down");
+        .removeClass("fa " + menuClosedChevron)
+        .addClass("fa " + menuOpenChevron);
 }
 
 /**
@@ -40,6 +40,6 @@ function toggleDropdownChevronOpen() {
  */
 function toggleDropdownChevronClosed() {
     $(this).find('.chevron_toggleable')
-        .removeClass("fa fa-chevron-down")
-        .addClass("fa fa-chevron-up");
+        .removeClass("fa " + menuOpenChevron)
+        .addClass("fa " + menuClosedChevron);
 }

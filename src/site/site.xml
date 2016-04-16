@@ -10,6 +10,10 @@
 
     <custom>
         <skinConfig>
+            <bootstrapTheme>./lib/bootswatch/cosmo/bootstrap.min.css</bootstrapTheme>
+            <navbarContainerClass>container</navbarContainerClass>
+            <menuOpenChevron>fa-caret-up</menuOpenChevron>
+            <menuClosedChevron>fa-caret-down</menuClosedChevron>
             <keywords>Maven Site, fix, HTML5</keywords>
             <descriptionUrl>Documentation for the Docs Maven Skin</descriptionUrl>
             <twitterSite>@Wandrell_BMG</twitterSite>
